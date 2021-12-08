@@ -28,7 +28,7 @@ bool ok;
         if (fd == -1)\
             printf("\033[1;31mError in Opening file!!\033[0m\n");\
         else{\
-        TEST_SEGFAULT(get_next_line(fd_seg, &str_out););\
+        TEST_SEGFAULT(get_next_line(fd_seg););\
         if (has_segfault_ft)\
         {\
             printf("\033[0;31m%-15s\033[0;33mFILE_NAME :\033[0;34m %-50s \033[0;33mBUFFER_SIZE : \033[1;0m%d\n","SEGFAULT",msg,BUFFER_SIZE);\
@@ -39,21 +39,16 @@ bool ok;
                 printf("\033[1;31mError in Opening file!!\033[0m\n");\
             else{\
                 start =  clock();\
-                retu = get_next_line(fd, &str_out);\
+                str_out = get_next_line(fd);\
                 time += ((double)clock() - start) / (double)CLOCKS_PER_SEC;\
-                if (!str_out || !expected)\
+                if (!str_out ^ !expected)\
                 {\
                     printf("\033[0;31m%-15s\033[0;33mFILE_NAME :\033[0;34m %-50s \033[0;33mBUFFER_SIZE : \033[1;0m%-15dOUT: \"%s\"\tEXPECTED : \"%s\"\t\t AT_LINE : %d\n","KO IN LINE",msg,BUFFER_SIZE,str_out,expected,ln);\
                     return 0377;\
                 }\
-                if(strcmp(str_out,expected))\
+                if(str_out && strcmp(str_out,expected))\
                 {\
                     printf("\033[0;31m%-15s\033[0;33mFILE_NAME :\033[0;34m %-50s \033[0;33mBUFFER_SIZE : \033[1;0m%-15dOUT: \"%s\"\tEXPECTED : \"%s\"\t\t AT_LINE : %d\n","KO IN LINE",msg,BUFFER_SIZE,str_out,expected,ln);\
-                    return 0377;\
-                }\
-                if (retu != exp_return)\
-                {\
-                   printf("\033[0;31m%-15s\033[0;33mFILE_NAME :\033[0;34m %-50s \033[0;33mBUFFER_SIZE : \033[1;0m%-15dOUT : %d\tEXPECTED : %d \t\tAT LINE : %d\n","KO IN RETURN",msg,BUFFER_SIZE,retu,exp_return,ln);\
                     return 0377;\
                 }\
             }\
@@ -96,14 +91,11 @@ int main(int ac, char **av)
     {
         whatever = false;
         return_expected = getline(&buffer_expected, &buffer_size, fp);
-        if(buffer_expected[return_expected - 1] == '\n')
-        {
-            buffer_expected[return_expected - 1] = 0;
-            whatever = true;
-        }
-        return_expected = return_expected  > 0 || whatever ? 1 : 0;
-        return_expected = (i == n_time - 1 && !whatever)  ? 0 : return_expected;
-        TESTER_gnl(av[1], buffer_expected, return_expected,av[3],line_number);
+		if (return_expected != -1)
+        	TESTER_gnl(av[1], buffer_expected, 0,av[3],line_number);
+		else
+        	TESTER_gnl(av[1], NULL, 0,av[3],line_number);
+
         line_number++;
         if (time > 1)
         {

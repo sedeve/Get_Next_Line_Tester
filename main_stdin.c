@@ -4,7 +4,7 @@
 int main()
 {
 	char *line;
-	 get_next_line(0,&line);
+	 line = get_next_line(0);
 		printf("%s\n",line);
 	
 

@@ -37,8 +37,6 @@ int main()
     TEST(1000000000,tests,size, 0,desri);
     // CHECK THE MEMORY LEAK
     setbuf(stdout, NULL);
-    printf("\nMEMORY LEAK TEST : ");
-    system("gcc gnl_cpy/*.c mem_check_main.c -D BUFFER_SIZE=500 -o mem_check && bash memory_leak.sh");
     printf("\nCHECK READING FORM STDIN : ");
     system("gcc gnl_cpy/*.c main_stdin.c -D BUFFER_SIZE=500 -o std_check && bash stdin_check.sh");
     printf("\nCHECK ONE STATIC VARIABLE :");
